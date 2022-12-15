@@ -1,8 +1,8 @@
 # The CRASH course into a *fraction* of containerization
 The world of containerization is massive with lots of learning. This workshop hopes to remove the intimidation factor by letting you work through a meaningful number of pieces but thinly sliced. The pieces:
-1) Getting an application into Docker and see it work
+1) Getting an application into Docker and seeing it work
 2) Using a handful of Docker commands
-3) Getting an application into Kubernetes and see it work
+3) Getting an application into Kubernetes and seeing it work
 4) Using a handful of Kubernetes commands
 5) Utilize Helm to deploy into Kubernetes
 6) Using a handful of Helm commands
@@ -16,7 +16,7 @@ The world of containerization is massive with lots of learning. This workshop ho
 5) Install [Kubernetes extension for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
 
 
-## Create simple test web application
+## Create a simple test web application
 1) Launch **Visual Studio** and create an ASP.NET Core Web Application named `MyWebApp`
 
 ![webapp](./images/webapp.JPG)
@@ -32,7 +32,7 @@ The world of containerization is massive with lots of learning. This workshop ho
 3) Publish the application via the Build menu option
 
 
-## Getting the application into Docker and see it work
+## Getting the application into Docker and seeing it work
 1) Launch **Visual Studio Code**
 2) Open the folder containing your application csproj via the File menu option 
 
@@ -75,7 +75,7 @@ docker-compose up -d
 
 ![vsc_docker_webapp](./images/vsc_docker_webapp.JPG)
 
-9) Notice that the container is running. Right-click on the container and select the Open in Brower option. You should now see your application web page at address: http://localhost:86/. That `86` is from your `docker-compose.yml` where you specify the external port to expose the stuff running inside the container. The `80` is the default http port that web applications use and is termed the internal port that the container uses to *talk* to the application.
+9) Notice that the container is running. Right-click on the container and select the Open in Brower option. You should now see your application web page at the address: http://localhost:86/. That `86` is from your `docker-compose.yml` where you specify the external port to expose the stuff running inside the container. The `80` is the default http port that web applications use and is termed the internal port that the container uses to *talk* to the application.
 
 ## Using a handful of Docker commands
 1) In the Terminal window. Run the following command
@@ -102,7 +102,7 @@ docker-compose down
 ```
 8) The image (of the application) is needed for the next steps.
 
-## Getting the application into Kubernetes and see it work
+## Getting the application into Kubernetes and seeing it work
 1) Launch **Docker Desktop** and Enable Kubernetes via Settings
 
 ![docker_settings](./images/docker_settings.JPG)
@@ -136,7 +136,7 @@ docker image remove localhost:5000/imgorigin
     curl http://localhost:8080/
     ```
   - Learn [curl](https://github.com/curl/curl)
-  - Clean up! Don't worry! The registery still has the original image. Run the following command
+  - Clean up! Don't worry! The registry still has the original image. Run the following command
     ```
     docker stop testcurl
     docker rm testcurl
@@ -180,7 +180,7 @@ spec:
     app: io # this need to match spec -> selector -> matchLabels used in the deployment
   ports:
   - protocol: TCP
-    port: 8085 # this is the port for other in the cluster to talk to me
+    port: 8085 # this is the port for others in the cluster to talk to me
     targetPort: 80 # this is the port from the deployment and what the pods are exposed on
 ```
 8) Create a new file `ingress.yaml` under `k8s` and add the following content
@@ -199,7 +199,7 @@ spec:
           pathType: Prefix # https://pet2cattle.com/2021/04/ingress-pathtype
           backend:
             service:
-             name: io-service # this is name of the service
+             name: io-service # this is the name of the service
              port:
                 number: 8085 # this is the service's cluster port exposed to be talked to a lot
 ```
@@ -228,12 +228,12 @@ kubectl get all
 
 ![k8_kube_portforward](./images/k8_kube_portforward.jpg)
 
-5) Right-click on an entry `io-deployment...` and select Port Forward from the option menu. Use port 8080 for LOCAL.
+5) Right-click on an entry `io-deployment...` and select Port Forward from the options menu. Use port 8080 for LOCAL.
 6) Navigate to the application web page at the http://localhost:8080
 
 Congrats !!! Your application is working in Kubernetes. But there is more...
 
-We should really be accessing our application via a URL. Ingress time...
+We should be accessing our application via a URL. Ingress time...
 - https://github.com/kubernetes/ingress-nginx
 - https://kubernetes.github.io/ingress-nginx/deploy/
 
@@ -308,7 +308,7 @@ appVersion: 2024.1.0
 ```
 helm template io-release helmstuffhere
 ```
-4) Run the following helm command to install the application into kubernetes
+4) Run the following helm command to install the application into Kubernetes
 ```
 helm install io-release helmstuffhere
 ```
@@ -319,7 +319,7 @@ helm history io-release
 
 6) Click on the Kubernetes extension and explore what has been installed. Try http://foo.bar.com/ in your web browser or use curl
 
-### Why use helm ?
+### Why use helm?
 1) Go back to your application source code and edit the `/Pages/Index.cshtml.cs` file
 ```
 public void OnGet()
@@ -373,7 +373,7 @@ helm history io-release
 
 ![helm_newversion](./images/helm_newversion.jpg)
 
-10) Let rollback the application to the pervious version
+10) Let's rollback the application to the previous version
 ```
 helm rollback io-release 1
 ```
