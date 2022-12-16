@@ -346,11 +346,11 @@ docker image remove localhost:5000/imgoriginv2
 ```
 image: localhost:5000/imgoriginv2
 ```
-6) Edit the chart file at `/helmstuffhere/Chart.yaml` to reflect the new version of our application
+7) Edit the chart file at `/helmstuffhere/Chart.yaml` to reflect the new version of our application
 ```
 apiVersion: v2
 name: io-release
-description: A Helm chart for brian applications
+description: A Helm chart for my applications
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
@@ -361,27 +361,27 @@ version: 1.0.1
 # incremented each time you make changes to the application.
 appVersion: 2022.1.1
 ```
-7) Run the following helm command to install the new application version - UPGRADE
+8) Run the following helm command to install the new application version - UPGRADE
 ```
 helm upgrade io-release helmstuffhere
 ```
-8) Run the following helm command to see the helm history
+9) Run the following helm command to see the helm history
 ```
 helm history io-release
 ```
-9) Try http://foo.bar.com/ in your web browser and see the CRASH COURSE change
+10) Try http://foo.bar.com/ in your web browser and see the CRASH COURSE change
 
 ![helm_newversion](./images/helm_newversion.jpg)
 
-10) Let's rollback the application to the previous version
+11) Let's rollback the application to the previous version
 ```
 helm rollback io-release 1
 ```
-11) Run the following helm command to see the helm history
+12) Run the following helm command to see the helm history
 ```
 helm history io-release
 ```
-12) Try http://foo.bar.com/ in your web browser
+13) Try http://foo.bar.com/ in your web browser
 
 ## *(cue the dramatic music)* **THE POWER OF HELM !!!** 
 ## ...all the best on your journey into containerization...
