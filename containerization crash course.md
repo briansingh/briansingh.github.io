@@ -350,7 +350,7 @@ image: localhost:5000/imgoriginv2
 ```
 apiVersion: v2
 name: io-release
-description: A Helm chart for my applications
+description: A Helm chart for mywebapp
 type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
@@ -359,7 +359,7 @@ version: 1.0.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 2022.1.1
+appVersion: 2024.1.1
 ```
 8) Run the following helm command to install the new application version - UPGRADE
 ```
