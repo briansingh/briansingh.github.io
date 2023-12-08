@@ -127,7 +127,7 @@ This workshop will focus on - Application Configuration Settings
     docker image remove localhost:5000/imgorigin
     ```
 
-## Deployment Recipe
+## Deployment Recipe (Visual Studio Code)
 1) Using the left area - EXPLORER, create a new folder named `helmstuffhere` and a subfolder named `templates`
 
 2) Create a new file `configmap.yaml` under `templates` and add the following content
@@ -228,7 +228,7 @@ This workshop will focus on - Application Configuration Settings
     ![k8s_hostfile](./helm_images/k8s_hostfile.JPG)
 
 
-## Configuration Settings
+## Configuration Settings (Visual Studio Code)
 1) Create a new file `Chart.yaml` under the `helmstuffhere` folder and add the following content
     ```
     apiVersion: v2
@@ -269,7 +269,7 @@ This workshop will focus on - Application Configuration Settings
     helm history io-release
     ```
 
-6) Click on the Kubernetes extension and explore what has been installed. 
+6) Click on the Kubernetes extension icon in **Visual Studio Code** and explore what has been installed. 
 
 7) Try http://foo.bar.com/ in your web browser
 
