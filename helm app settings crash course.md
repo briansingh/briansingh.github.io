@@ -203,8 +203,8 @@ This workshop will focus on - Application Configuration Settings
               pathType: Prefix # https://pet2cattle.com/2021/04/ingress-pathtype
               backend:
                 service:
-                name: io-service # this is the name of the service
-                port:
+                 name: io-service # this is the name of the service
+                 port:
                     number: 8085 # this is the service's cluster port exposed to be talked to a lot
     ```
 6) We will be accessing our application via a URL using an ingress
