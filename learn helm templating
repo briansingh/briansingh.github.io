@@ -8,6 +8,8 @@
 2) Unzip the binary to a directory on your system, such as `C:\Helm`
 3) Add the local Helm directory to your PATH.
 
+## Launch Docker Desktop and Enable Kubernetes via Settings
+
 ## Create a simple starter Helm Chart
 1) Create a folder named - `LearnHelm`
 2) Open the folder in Visual Studio Code
@@ -15,6 +17,7 @@
     ```
     helm create myproject
     ```
+
 ## The bare mininum Helm Chart
 1) Delete all folders and files EXCEPT the `Chart.yaml` file
     ```
@@ -35,7 +38,7 @@
     ```
 2) Install the Helm Chart by running the follow command in a Visual Studio Code terminal
     ```
-    helm install myreleasename myproject
+    helm install myrelease myproject
     ```
 3) Confirm the Helm Chart installation by running the follow command in a Visual Studio Code terminal
     ```
@@ -43,18 +46,47 @@
     ```
 4) Uninstall the Helm Chart by running the follow command in a Visual Studio Code terminal
     ```
-    helm uninstall myreleasename
+    helm uninstall myrelease
     ```
 
 ## Helm - Built-in Objects
 1) Create a folder named - `templates` at the same level as `Chart.yaml`
 2) Create a file named - `configmap.yaml` inside the `templates` folder
-3) Add the following content to the file
+3) Add the following content to the file and save
     ```
-    helm create myproject
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      the_chart_name_is: {{ .Chart.Name }}
+      the_template_name_is: {{ .Template.Name }}
     ```
-
-
+4) Install the Helm Chart by running the follow command in a Visual Studio Code terminal
+    ```
+    helm install myrelease myproject
+    ```
+5) Use Helm Get Manifest to view the generated Kubernetes resources by running the follow command in a Visual Studio Code terminal
+    ```
+    helm get manifest myrelease
+    ```
+6) Install the Helm Chart again by running the follow command in a Visual Studio Code terminal
+    ```
+    helm install foobar myproject
+    ```
+7) Use Helm Get Manifest to view the generated Kubernetes resources by running the follow command in a Visual Studio Code terminal
+    ```
+    helm get manifest foobar
+    ```
+8) Confirm the Helm Chart installations by running the follow command in a Visual Studio Code terminal
+    ```
+    helm list
+    ```
+9) Uninstall the Helm Charts by running the follow command in a Visual Studio Code terminal
+    ```
+    helm uninstall myrelease
+    helm uninstall foobar
+    ```
 
 
 ## Getting ready for Docker
