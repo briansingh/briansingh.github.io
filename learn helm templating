@@ -12,7 +12,7 @@
 
 ## Create a simple starter Helm Chart
 1) Create a folder named - `LearnHelm`
-2) Open the folder in Visual Studio Code
+2) Open the `LearnHelm` folder in Visual Studio Code
 3) Run the follow command in a Visual Studio Code terminal
     ```
     helm create myproject
@@ -59,8 +59,8 @@
     metadata:
       name: {{ .Release.Name }}-configmap
     data:
-      the_chart_name_is: {{ .Chart.Name }}
-      the_template_name_is: {{ .Template.Name }}
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
     ```
 4) Install the Helm Chart by running the follow command in a Visual Studio Code terminal
     ```
@@ -87,6 +87,30 @@
     helm uninstall myrelease
     helm uninstall foobar
     ```
+
+## Helm - Values Files and Locally render templates
+1) Create a file named - `values.yaml` at the same level as `Chart.yaml`
+2) Add the following content to the file and save
+    ```
+    msg: "hello world"
+    ```
+2) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+    ```
+3) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+
+
 
 
 ## Getting ready for Docker
