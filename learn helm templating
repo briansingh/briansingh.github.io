@@ -110,6 +110,13 @@
     helm template myproject
     ```
 
+## Helm - Overriding entries in values.yaml during deployment
+1) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject --set msg="test"
+    ```
+2) Note the value of `message` in the rendered configmap file
+
 
 
 
