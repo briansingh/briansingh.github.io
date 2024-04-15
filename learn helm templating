@@ -117,6 +117,67 @@
     ```
 2) Note the value of `message` in the rendered configmap file
 
+## Helm - Template Functions and Pipelines
+1) Edit the content of `values.yaml` and save
+    ```
+    msg: "hello world"
+    user:
+      name: john smith
+      location: usa
+    ```
+2) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ upper .Values.user.location }}
+    ```
+3) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+4) Note the usage of the quote and upper functions - https://helm.sh/docs/chart_template_guide/function_list/#string-functions
+5) One of the powerful features of the template language is its concept of pipelines. Pipelines are an efficient way of getting several things done in sequence.
+6) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ .Values.user.location | quote | upper }}
+    ```
+7) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+8) Note the value of userLocation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
