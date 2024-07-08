@@ -218,19 +218,150 @@
     helm template myproject
     ```
 
-## Helm - Template Function List - https://helm.sh/docs/chart_template_guide/function_list/
+## Helm - Template Function List
+We will utilize a number of functions during this workshop 
+but the comprehensive list of functions can be found here: https://helm.sh/docs/chart_template_guide/function_list/
+
+## Helm - Flow Control - If/Else
+1) The basic structure looks like this:
+    ```
+    {{ if PIPELINE }}
+      # Do something
+    {{ else if OTHER PIPELINE }}
+      # Do something else
+    {{ else }}
+      # Default case
+    {{ end }}
+    ```
+Notice that we are now talking about **pipelines** instead of **values**. 
+The reason for this is to make it clear that control structures can execute an entire pipeline, not just evaluate a value.
+
+2) A pipeline is evaluated as false if the value is:
+    * a boolean false
+    * a numeric zero
+    * an empty string
+    * a nil (empty or null)
+    * an empty collection (map, slice, tuple, dict, array)
+
+    **Under all other conditions, the condition is true.**
+3) Edit the content of `values.yaml` and save
+    ```
+    msg: "hello world"
+    user:
+      name: john smith
+      location:
+    placesVisited:
+      NY:
+        NYC: 4
+        Buffalo: 1
+      TX:
+        Dallas: 1
+        Houston: 1
+    ```
+4) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+    name: {{ .Release.Name }}-configmap
+    data:
+    theChartName: {{ .Chart.Name }}
+    theTemplateName: {{ .Template.Name }}
+    message: {{ .Values.msg }}
+    userName: {{ quote .Values.user.name }}
+    userLocation: {{ .Values.user.location | quote | upper }}
+    currency: {{ .Values.currency | default "usd" | upper }}
+    visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+    {{ if .Values.user.location | quote | upper }} 
+    locationProvided: true
+    {{ else }} 
+    locationProvided: false
+    {{ end }}
+    ```
+5) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+
+## Helm - Flow Control - If/Else (Controlling Whitespace)
+As you can observe in the previous render, there are some unsightly whitespace in the output.
+Luckly, Helm has tools to help...
+The curly brace syntax can be modified to tell the template engine to chomp whitespaces.
+`{{-` indicates that whitespace should be chomped left, while `-}}` means whitespace to the right should be consumed. 
+1) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+    name: {{ .Release.Name }}-configmap
+    data:
+    theChartName: {{ .Chart.Name }}
+    theTemplateName: {{ .Template.Name }}
+    message: {{ .Values.msg }}
+    userName: {{ quote .Values.user.name }}
+    userLocation: {{ .Values.user.location | quote | upper }}
+    currency: {{ .Values.currency | default "usd" | upper }}
+    visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+    {{- if .Values.user.location | quote | upper }} 
+    locationProvided: true
+    {{- else }} 
+    locationProvided: false
+    {{- end }}
+    ```
+2) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+
+**BYE BYE WHITESPACE**
+
+3) Edit the content of `values.yaml` and save
+    ```
+    msg: "hello world"
+    user:
+      name: john smith
+      location: usa
+    placesVisited:
+      NY:
+        NYC: 4
+        Buffalo: 1
+      TX:
+        Dallas: 1
+        Houston: 1
+    ```
+5) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+
+## Helm - Flow Control - If/Else (Simplify)
+1) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+    name: {{ .Release.Name }}-configmap
+    data:
+    theChartName: {{ .Chart.Name }}
+    theTemplateName: {{ .Template.Name }}
+    message: {{ .Values.msg }}
+    userName: {{ quote .Values.user.name }}
+    userLocation: {{ .Values.user.location | quote | upper }}
+    currency: {{ .Values.currency | default "usd" | upper }}
+    visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+    locationProvided: {{- if .Values.user.location | quote | upper }} true {{- else }} false {{- end }}
+    ```
+2) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
 
 
-## Helm - Flow Control - creating conditional blocks
+
 
 ## Helm - Flow Control - specify a scope
 
 ## Helm - Flow Control - for each loop
-
-
-
-
-
 
 
 
