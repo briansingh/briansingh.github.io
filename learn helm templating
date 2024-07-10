@@ -356,12 +356,217 @@ The curly brace syntax can be modified to tell the template engine to chomp whit
     helm template myproject
     ```
 
+## Helm - Flow Control - With (Modifying scope)
+1) Edit the content of `values.yaml` and save
+    ```
+    msg: "hello world"
+    user:
+      name: john smith
+      location: usa
+    placesVisited:
+      NY:
+        NYC: 4
+        Buffalo: 1
+      TX:
+        Dallas: 1
+        Houston: 1
+      OK:
+        Miami: 3
+      FL:
+        Miami: 7
+    ```
+2) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ .Values.user.location | quote | upper }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      locationProvided: {{- if .Values.user.location | quote | upper }} true {{- else }} false {{- end }}
+      {{- with .Values.placesVisited.OK }}
+      miamiOklahomaVisits: {{ .Miami }}
+      {{- end }}
+    ```
+3) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+4) What happens if you change the `with` line to `{{- with .Values.placesVisited.FL }}`? Is that correct?
+
+5) `with` limits what can be accessed within its block. Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ .Values.user.location | quote | upper }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      locationProvided: {{- if .Values.user.location | quote | upper }} true {{- else }} false {{- end }}
+      {{- with .Values.placesVisited.OK }}
+      miamiOklahomaVisits: {{ .Miami }}
+      test: {{ .Template.Name }}
+      {{- end }}
+    ```
+6) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+7) There is an option available that will allow you to reach outside the scope limit. `$` is mapped to the root scope when template execution begins and it does not change during template execution. Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ .Values.user.location | quote | upper }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      locationProvided: {{- if .Values.user.location | quote | upper }} true {{- else }} false {{- end }}
+      {{- with .Values.placesVisited.OK }}
+      miamiOklahomaVisits: {{ .Miami }}
+      test: {{ $.Template.Name }}
+      {{- end }}
+    ```
+8) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+
+## Helm - Flow Control - Range
+In Helm, the way to iterate through a collection is to use the `range` operator. Just like how `with` sets the scope of `.`, so does a `range` operator.
+1) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ .Values.user.location | quote | upper }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      locationProvided: {{- if .Values.user.location | quote | upper }} true {{- else }} false {{- end }}
+      {{- with .Values.placesVisited.OK }}
+      miamiOklahomaVisits: {{ .Miami }}
+      {{- end }}
+      citiesVisited:
+      {{- range .Values.placesVisited }}
+      {{- . | toYaml | nindent 4  }}
+      {{- end }}
+    ```
+2) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
 
 
+## Helm - Flow Control - Variables
+In Helm, a variable follows the form `$name`. Variables are assigned using the assignment operator, `:=`. In our `configmap.yaml`, there is a redundant reference, `.Values.user.location`, which can be replaced with a variable.
+1) Edit the content of `configmap.yaml` and save
+    ```
+    {{- $theUserLocation := .Values.user.location | quote | upper -}}
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ $theUserLocation }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      locationProvided: {{- if $theUserLocation }} true {{- else }} false {{- end }}
+      {{- with .Values.placesVisited.OK }}
+      miamiOklahomaVisits: {{ .Miami }}
+      {{- end }}
+      citiesVisited:
+      {{- range .Values.placesVisited }}
+      {{- . | toYaml | nindent 4  }}
+      {{- end }}
+    ```
+2) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
 
-## Helm - Flow Control - specify a scope
+Variables are particularly useful in `range` loops.
+They can be used on list-like objects to capture both the `index` and the `value`.
 
-## Helm - Flow Control - for each loop
+3) Edit the content of `values.yaml` and save
+    ```
+    msg: "hello world"
+    user:
+      name: john smith
+      location: usa
+    placesVisited:
+      NY:
+        NYC: 4
+        Buffalo: 1
+      TX:
+        Dallas: 1
+        Houston: 1
+      OK:
+        Miami: 3
+      FL:
+        Miami: 7
+    inventory:
+      - watch
+      - headphone
+      - sunglasses
+    ```
+4) Edit the content of `configmap.yaml` and save
+    ```
+    {{- $theUserLocation := .Values.user.location | quote | upper -}}
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ $theUserLocation }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      locationProvided: {{- if $theUserLocation }} true {{- else }} false {{- end }}
+      {{- with .Values.placesVisited.OK }}
+      miamiOklahomaVisits: {{ .Miami }}
+      {{- end }}
+      citiesVisited:
+      {{- range .Values.placesVisited }}
+      {{- . | toYaml | nindent 4  }}
+      {{- end }}
+      items:
+        {{- range $index, $item := .Values.inventory }}
+        - {{ $index }}: {{ $item | title | quote }}
+        {{- end }}
+    ```
+5) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
 
-
-
+    
