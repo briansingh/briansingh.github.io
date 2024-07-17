@@ -218,6 +218,44 @@
     helm template myproject
     ```
 
+## Helm - Template Function - tpl
+The `tpl` function allows developers to evaluate strings as templates inside a template.
+1) Edit the content of `values.yaml` and save
+    ```
+    msg: "hello world"
+    example: "{{ .Values.msg }} - {{ .Values.user.name }}"
+    user:
+      name: john smith
+      location: usa
+    placesVisited:
+      NY:
+        NYC: 4
+        Buffalo: 1
+      TX:
+        Dallas: 1
+        Houston: 1
+    ```
+2) Edit the content of `configmap.yaml` and save
+    ```
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ .Release.Name }}-configmap
+    data:
+      theChartName: {{ .Chart.Name }}
+      theTemplateName: {{ .Template.Name }}
+      message: {{ .Values.msg }}
+      userName: {{ quote .Values.user.name }}
+      userLocation: {{ .Values.user.location | quote | upper }}
+      currency: {{ .Values.currency | default "usd" | upper }}
+      visited: {{ .Values.placesVisited | toYaml | nindent 4 }}
+      greeting: {{ tpl .Values.example . }}
+    ```
+3) Locally render the templates by running the follow command in a Visual Studio Code terminal
+    ```
+    helm template myproject
+    ```
+
 ## Helm - Template Function List
 We will utilize a number of functions during this workshop 
 but the comprehensive list of functions can be found here: https://helm.sh/docs/chart_template_guide/function_list/
